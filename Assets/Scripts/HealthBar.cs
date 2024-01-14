@@ -11,7 +11,7 @@ public class HealthBar : MonoBehaviour
     private void Awake()
     {
         _healthBar = GetComponent<Slider>();
-        _healthBar.value = _player.Health;
+        _healthBar.value = _player.Health/ _player.MaxHealth;
     }
 
     private void OnEnable()
@@ -26,6 +26,6 @@ public class HealthBar : MonoBehaviour
 
     private void ChangeBarValue()
     {
-        _healthBar.value = _player.Health;
+        _healthBar.value = _player.Health / _player.MaxHealth;
     }
 }

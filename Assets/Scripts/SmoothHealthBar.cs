@@ -9,34 +9,34 @@ public class SmoothHealthBar : MonoBehaviour
     [SerializeField] private float _speed;
     
     private Slider _healthBar;
-    private bool _healthChanged;
     private Coroutine _changeHealth;
+    private float _currentHealth;
     
     private void Start()
     {
         _healthBar = GetComponent<Slider>();
-        _healthBar.value = _player.Health;
+        _currentHealth = _player.Health / _player.MaxHealth;
+        _healthBar.value = _currentHealth;
     }
 
     private void OnEnable()
     {
         _player.HealthChanged += ChangeBarValue;
-        _healthChanged = true;
     }
 
     private void OnDisable()
     {
         _player.HealthChanged -= ChangeBarValue;
-        _healthChanged = false;
     }
 
     private void ChangeBarValue()
     {
-        if (_healthChanged)
+        if (_changeHealth == null)
         {
             _changeHealth = StartCoroutine(SmoothChangeValue());
         }
-        else
+
+        if (_player == null)
         {
             StopCoroutine(_changeHealth);
         }
@@ -44,9 +44,10 @@ public class SmoothHealthBar : MonoBehaviour
 
     private IEnumerator SmoothChangeValue()
     {
-        while (_healthBar.value != _player.Health)
+        while (true)
         {
-            _healthBar.value = Mathf.MoveTowards(_healthBar.value, _player.Health,_speed * Time.deltaTime);
+            _currentHealth = _player.Health / _player.MaxHealth;
+            _healthBar.value = Mathf.MoveTowards(_healthBar.value, _currentHealth,_speed * Time.deltaTime);
             yield return null;
         } 
     }
